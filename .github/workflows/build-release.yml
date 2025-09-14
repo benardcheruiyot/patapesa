@@ -1,0 +1,8 @@
+name: (deprecated) Build Release AAB
+
+on: []
+
+# This workflow was replaced by .github/workflows/android-release-sign.yml
+# which is the canonical, hardened signing workflow. Keep this placeholder
+# to avoid accidental triggers. Remove this file after confirming the
+# new workflow is working.

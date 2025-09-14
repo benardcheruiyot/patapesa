@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Green background circle -->
+  <circle cx="512" cy="512" r="512" fill="#00A651"/>
+  
+  <!-- White inner circle -->
+  <circle cx="512" cy="512" r="400" fill="#FFFFFF"/>
+  
+  <!-- PataPesa Text -->
+  <text x="512" y="480" font-family="Arial, sans-serif" font-size="120" font-weight="bold" text-anchor="middle" fill="#00A651">
+    Pata
+  </text>
+  <text x="512" y="580" font-family="Arial, sans-serif" font-size="120" font-weight="bold" text-anchor="middle" fill="#00A651">
+    Pesa
+  </text>
+  
+  <!-- Money symbol -->
+  <text x="512" y="320" font-family="Arial, sans-serif" font-size="80" text-anchor="middle" fill="#00A651">
+    💰
+  </text>
+</svg>

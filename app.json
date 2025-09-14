@@ -1,0 +1,8 @@
+{
+  "name": "PataPesaApp",
+  "displayName": "PataPesa",
+  "version": "1.6.3",
+  "android": {
+    "versionCode": 13
+  }
+}
