@@ -1,4 +1,4 @@
-apply plugin: "com.android.application"
+﻿apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
@@ -82,9 +82,23 @@ android {
         applicationId "com.nativeapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "1.5"
+    // Bumped for production release (semantic versioning)
+    // Best practice: increment versionCode for every Play Store upload.
+    versionCode 14
+    versionName "1.6.4"
     }
+    // Load keystore properties from either android/key.properties (CI) or
+    // android/app/keystore.properties (alternate workflow). If neither is
+    // present, fall back to the local `release.keystore` for local testing.
+    def keystoreProps = new Properties()
+    def keyPropsFileRoot = rootProject.file('key.properties') // created by some workflows
+    def keyPropsFileApp = file('keystore.properties') // created by alternate workflow
+    if (keyPropsFileRoot.exists()) {
+        keystoreProps.load(new FileInputStream(keyPropsFileRoot))
+    } else if (keyPropsFileApp.exists()) {
+        keystoreProps.load(new FileInputStream(keyPropsFileApp))
+    }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -92,15 +106,34 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        // Release signing config removed - keystores deleted
+
+        release {
+            if (keystoreProps.size() > 0) {
+                // When storeFile in properties is relative (e.g. app/upload-keystore.jks)
+                // resolve it relative to the current project directory.
+                def storeFilePath = keystoreProps.get('storeFile')
+                if (storeFilePath != null) {
+                    storeFile file(storeFilePath.toString())
+                }
+                storePassword keystoreProps.get('storePassword') ?: keystoreProps.get('storePassword')
+                keyAlias keystoreProps.get('keyAlias') ?: keystoreProps.get('keyAlias')
+                keyPassword keystoreProps.get('keyPassword') ?: keystoreProps.get('keyPassword')
+            } else {
+                // Legacy/local fallback
+                storeFile file('release.keystore')
+                storePassword 'changeit'
+                keyAlias 'release'
+                keyPassword 'changeit'
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Release signing config removed - keystores deleted
-            // signingConfig signingConfigs.release
+            // Use the local release signing config for building an AAB.
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
