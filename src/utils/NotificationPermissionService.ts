@@ -1,4 +1,5 @@
 import { PermissionsAndroid, Platform, Alert, Linking } from 'react-native';
+import FirstRunNotification from './FirstRunNotification';
 
 export class NotificationPermissionService {
   static async requestNotificationPermission(): Promise<boolean> {
@@ -19,6 +20,12 @@ export class NotificationPermissionService {
 
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             console.log('✅ Notification permission granted');
+            // Show the one-time native welcome notification when permission is granted.
+            try {
+              await FirstRunNotification.showFirstRunNotificationIfNeeded();
+            } catch (err) {
+              console.warn('⚠️ Failed to show first-run notification after grant:', err);
+            }
             return true;
           } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
             // Show alert to open settings
